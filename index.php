@@ -31,13 +31,13 @@
             switch($_REQUEST['action'])
             {
                 case 'upgradeBuilding':
-                    if($v->upgradeBuilding('woodcutter'))
+                    if($v->upgradeBuilding($_REQUEST['building']))
                         {
-                            echo "Ulepszono budynek drwala";
+                            echo "Ulepszono budynek: ".$_REQUEST['building'];
                         } 
                         else
                         {
-                            echo "Nie udało się ulepszyć budynku drwala";
+                            echo "Nie udało się ulepszyć budynku: ".$_REQUEST['building'];
                         }
                     break;
                     default:
@@ -57,7 +57,9 @@
     <a href="index.php?action=upgradeBuilding&building=woodcutter">
     <button>Rozbuduj drwala</button>
     </a>
+    <a href="index.php?action=upgradeBuilding&building=ironMine">
     <button>Rozbuduj kopalnie żelaza</button>
+    </a>
 </body>
 </html>
 
