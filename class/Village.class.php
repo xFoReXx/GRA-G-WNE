@@ -58,7 +58,12 @@ class Village
     public function gain($deltaTime) 
     {
         $this->storage['wood'] += $this->woodGain($deltaTime);
+        if($this->storage['wood'] > $this->capacity('wood'))
+            $this->storage['wood'] = $this->capacity('wood');
+
         $this->storage['iron'] += $this->ironGain($deltaTime);
+        if($this->storage['iron'] > $this->capacity('iron'))
+            $this->storage['iron'] = $this->capacity('iron');
     }
     public function upgradeBuilding(string $buildingName) : bool
     {
@@ -77,6 +82,51 @@ class Village
         //podnies lvl budynku o 1
         $this->buildings[$buildingName] += 1; 
         return true;
+    }
+    public function showHourGain(string $resource) : string
+    {
+        switch($resource) {
+            case 'wood':
+                return $this->woodGain(3600);
+            break;
+            case 'iron':
+                return $this->ironGain(3600);
+            break;
+            default:
+                echo "Nie ma takiego surowca!";
+            break;
+        }
+    }
+    public function showStorage(string $resource) : string 
+    {
+        if(isset($this->storage[$resource]))
+        {
+            return floor($this->storage[$resource]);
+        }
+        else
+        {
+            return "Nie ma takiego surowca!";
+        }
+    }
+    public function buildingLVL(string $building) : int 
+    {
+        return $this->buildings[$building];
+    }
+    public function capacity(string $resource) : int
+    {
+        switch ($resource) {
+            case 'wood':
+                return $this->woodGain(60*60*24); //doba
+                break;
+            
+            case 'iron':
+                return $this->ironGain(60*60*12); //12 godzin
+                break;
+                
+            default:
+                return 0;
+                break;
+        }
     }
 }
 ?>
