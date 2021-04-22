@@ -1,5 +1,6 @@
 <?php 
 require_once('Village.class.php');
+require_once('Log.class.php');
 class GameManager
 {
     public $v; //wioska
@@ -8,7 +9,9 @@ class GameManager
 
     public function __construct()
     {
-        $this->v = new Village();
+        $this->l = new Log();
+        $this->v = new Village($this);
+        $this->l->log("Tworzę nową gre...", 'gameManager', 'info');
         $this->t = time();
     }
     public function deltaTime() : int

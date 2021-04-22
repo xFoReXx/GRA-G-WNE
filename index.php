@@ -3,11 +3,8 @@
         session_start();
         if(!isset($_SESSION['gm'])) // jeżeli nie ma w sesji naszej wioski
         {
-            echo "Tworzę nową gre...";
             $gm = new GameManager();
             $_SESSION['gm'] = $gm;
-            //reset czasu od ostatniego odświerzenia strony
-            $deltaTime = 0;
         } 
         else //mamy już wioskę w sesji - przywróć ją
         {
@@ -38,7 +35,6 @@
 
 
         
-
 
     ?>
     
@@ -109,12 +105,26 @@
         </main>
         <footer class="row">
             <div class="col-12">
-            <pre>
+            <table class="table table-bordered">
             <?php
-            var_dump($v);
-            var_dump($_REQUEST);
+            
+                
+            
+            foreach ($gm->l->getLog() as $entry) {
+                $timestamp = date('d.m.Y H:i:s', $entry['timestamp']);
+                $sender = $entry['sender'];
+                $message = $entry['message'];
+                $type = $entry['type'];
+                 echo "<tr>";
+                 echo "<td>$timestamp</td>";
+                 echo "<td>$sender</td>";
+                 echo "<td>$message</td>";
+                 echo "<td>$type</td>";
+                 echo "</tr>";
+            }
+            
             ?>
-            </pre>
+            </table>
             </div>
         </footer>
     </div>

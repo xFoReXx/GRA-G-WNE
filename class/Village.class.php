@@ -1,11 +1,14 @@
 <?php
 class Village 
 {
+    private $gm;
     private $buildings;
     private $storage;
     private $upgradeCost;
-    public function __construct()
+    public function __construct($gameManager)
     {
+        $this->gm = $gameManager;
+        $this->log('Utworzono nową wioskę', 'info');
         $this->buildings = array(
             'townHall' => 1,
             'woodcutter' => 1,
@@ -139,6 +142,10 @@ class Village
                 return 0;
                 break;
         }
+    }
+    public function log(string $message, string $type)
+    {
+        $this->gm->l->log($message, 'village', $type);
     }
 }
 ?>
