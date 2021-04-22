@@ -127,7 +127,7 @@ class Village
         else
         {
             $this->log( "Nie ma takiego surowca!", "error");
-            return "Nie ma takiego surowca!";
+            return "";
         }
     }
     public function buildingLVL(string $building) : int 
