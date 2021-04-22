@@ -1,20 +1,22 @@
 <?php 
-        require('./class/Village.class.php');
+        require_once('./class/GameManager.class.php');
         session_start();
-        if(!isset($_SESSION['v'])) // jeżeli nie ma w sesji naszej wioski
+        if(!isset($_SESSION['gm'])) // jeżeli nie ma w sesji naszej wioski
         {
-            echo "Tworzę nową wioskę...";
-            $v = new Village();
-            $_SESSION['v'] = $v;
+            echo "Tworzę nową gre...";
+            $gm = new GameManager();
+            $_SESSION['gm'] = $gm;
             //reset czasu od ostatniego odświerzenia strony
             $deltaTime = 0;
         } 
         else //mamy już wioskę w sesji - przywróć ją
         {
-            $v = $_SESSION['v'];
+            $gm = $_SESSION['gm'];
+            
             //ilosc sekund od ostatniego odświerzenia strony
             $deltaTime = time() - $_SESSION['time'];
         }
+        $v = $gm->v; //niezależnie czy nowa gra czy załadowana
         $v->gain($deltaTime);
         
         if(isset($_REQUEST['action'])) 
@@ -83,14 +85,24 @@
                 Lista budynków<br>
                 Drwal, poziom <?php echo $v->buildingLVL("woodcutter"); ?> <br>
                 Zysk/h: <?php echo $v->showHourGain("wood"); ?><br>
+                <?php if($v->checkBuildingUpgrade("woodcutter")) : ?>
                 <a href="index.php?action=upgradeBuilding&building=woodcutter">
                     <button>Rozbuduj drwala</button>
                 </a><br>
+                <?php else : ?>
+                    <button onclick="missingResourcesPopup()">Rozbuduj drwala</button>
+                <br>
+                <?php endif; ?> 
                 Kopalnia żelaza, poziom <?php echo $v->buildingLVL("ironMine"); ?> <br>
                 Zysk/h: <?php echo $v->showHourGain("iron"); ?><br>
+                <?php if($v->checkBuildingUpgrade("ironMine")) : ?>
                 <a href="index.php?action=upgradeBuilding&building=ironMine">
                     <button>Rozbuduj kopalnie żelaza</button>
                 </a>
+                <?php else : ?>
+                    <button onclick="missingResourcesPopup()">Rozbuduj kopalnie żelaza</button>
+                <br>
+                <?php endif; ?> 
             </div>
             <div class="col-12 col-md-6">
                 Widok wioski
@@ -110,7 +122,11 @@
             </div>
         </footer>
     </div>
-
+        <script>
+            function missingResourcesPopup(){
+                window.alert("Brakuje zasobów");
+            }
+        </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 </body>
