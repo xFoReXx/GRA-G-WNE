@@ -12,13 +12,10 @@
         else //mamy już wioskę w sesji - przywróć ją
         {
             $gm = $_SESSION['gm'];
-            
-            //ilosc sekund od ostatniego odświerzenia strony
-            $deltaTime = time() - $_SESSION['time'];
         }
-        $v = $gm->v; //niezależnie czy nowa gra czy załadowana
-        $v->gain($deltaTime);
-        
+        $v = $gm->v; //niezależnmie czy nowa gra czy załadowana
+        $gm->sync(); //przelicz surowce
+
         if(isset($_REQUEST['action'])) 
         {
             switch($_REQUEST['action'])
@@ -40,7 +37,6 @@
         }
 
 
-        $_SESSION['time'] = time();
         
 
 
