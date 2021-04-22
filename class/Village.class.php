@@ -1,4 +1,5 @@
 <?php
+
 class Village 
 {
     private $gm;
@@ -8,7 +9,7 @@ class Village
     public function __construct($gameManager)
     {
         $this->gm = $gameManager;
-        $this->log('Utworzono nową wioskę', 'info');
+        $this->log('Tworzę nową wioskę', 'info');
         $this->buildings = array(
             'townHall' => 1,
             'woodcutter' => 1,
@@ -39,6 +40,7 @@ class Village
                 )
             ),
         );
+        $this->log('Utworzono nową wioskę', 'info');
     }
     private function woodGain(int $deltaTime) : float
     {
@@ -76,7 +78,10 @@ class Village
             //key - nazwa surowca
             //value koszt surowca
             if($value > $this->storage[$key])
+            {
+                $this->log("Nie udało się ulepszyć budynku - brak surowca: ".$key, "warning");
                 return false;
+            }
         }
         foreach ($cost as $key => $value) {
             //odejmujemy surowce na budynek
@@ -84,6 +89,7 @@ class Village
         }
         //podnies lvl budynku o 1
         $this->buildings[$buildingName] += 1; 
+        $this->log("Ulepszono budynek: ".$buildingName, "info");
         return true;
     }
     public function checkBuildingUpgrade(string $buildingName) : bool
@@ -108,7 +114,7 @@ class Village
                 return $this->ironGain(3600);
             break;
             default:
-                echo "Nie ma takiego surowca!";
+                $this->log( "Nie ma takiego surowca!", "error");
             break;
         }
     }
@@ -120,6 +126,7 @@ class Village
         }
         else
         {
+            $this->log( "Nie ma takiego surowca!", "error");
             return "Nie ma takiego surowca!";
         }
     }

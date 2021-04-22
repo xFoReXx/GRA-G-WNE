@@ -10,8 +10,8 @@ class GameManager
     public function __construct()
     {
         $this->l = new Log();
-        $this->v = new Village($this);
         $this->l->log("Tworzę nową gre...", 'gameManager', 'info');
+        $this->v = new Village($this);
         $this->t = time();
     }
     public function deltaTime() : int

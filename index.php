@@ -18,18 +18,10 @@
             switch($_REQUEST['action'])
             {
                 case 'upgradeBuilding':
-                    if($v->upgradeBuilding($_REQUEST['building']))
-                    {
-                        echo "Ulepszono budynek: ".$_REQUEST['building'];
-                    }
-                    else
-                    {
-                        echo "Nie udało się ulepszyć budynku: ".$_REQUEST['building'];
-                    }
-                    
+                    $v->upgradeBuilding($_REQUEST['building']);
                 break;
                 default:
-                    echo 'Nieprawidłowa zmienna "action"';
+                    $gm->l->log( "Nieprawidłowa zmienna \"action\"", "controller", "error");
             }
         }
 
