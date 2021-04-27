@@ -42,6 +42,21 @@ class Village
         );
         $this->log('Utworzono nową wioskę', 'info');
     }
+    public function buildingList() : array {
+        $buildingList = array();
+        foreach($this->buildings as $buildingName => $buildingLVL)
+        {
+            $building = array();
+            $building['buildingName'] = $buildingName;
+            $building['buildingLVL'] = $buildingLVL;
+            if(isset($this->upgradeCost[$buildingName][$buildingLVL+1] ))
+                $building['upgradeCost'] = $this->upgradeCost[$buildingName][$buildingLVL+1] ;
+            else 
+                $building['upgradeCost'] = array();
+            array_push($buildingList, $building);
+        }
+        return $buildingList;
+    }
     private function woodGain(int $deltaTime) : float
     {
         //liczymy zysk na godzine z wzoru poziom_drwala ^ 2
@@ -95,6 +110,8 @@ class Village
     public function checkBuildingUpgrade(string $buildingName) : bool
     {
         $currentLVL = $this->buildings[$buildingName];
+        if(!isset($this->upgradeCost[$buildingName][$currentLVL+1]))
+            return false;
         $cost = $this->upgradeCost[$buildingName][$currentLVL+1];
         foreach ($cost as $key => $value) {
             //key - nazwa surowca

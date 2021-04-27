@@ -20,16 +20,38 @@
                 case 'upgradeBuilding':
                     $v->upgradeBuilding($_REQUEST['building']);
                 break;
+                case 'townHall' :
+                    $buildingList = $v->buildingList();
+                    $mainContent = "<table class=\"table table-bordered\">";
+                    $mainContent .= "<tr><th>Nazwa budynku</th><th>Poziom budynku</th><th>Kosz ulepszenia</th><th>Rozbudowa</th></tr>";
+                    foreach($buildingList as $index => $building) 
+                    {
+                        $name = $building['buildingName'];
+                        $level = $building['buildingLVL'];
+                        $upgradeCost = "";
+                        
+                        foreach($building['upgradeCost'] as $resource => $cost)
+                        {
+                            $upgradeCost .= "$resource: $cost,";
+                        }
+                        $mainContent .="<tr><td>$name</td><td>$level</td><td>$upgradeCost</td>";
+                        if($v->checkBuildingUpgrade($name))
+                            $mainContent .= 
+                                "<td><a href=\"index.php?action=upgradeBuilding&building=$name\">
+                                <button>Rozbuduj</button>
+                                </a></td>";
+                        else
+                        $mainContent .= "<td></td>";
+                        $mainContent .="</tr>";
+                    }
+                    $mainContent .= "</table>";
+                    $mainContent .= "<a href=\"index.php\">Powrót</a>";
+                break;
                 default:
                     $gm->l->log( "Nieprawidłowa zmienna \"action\"", "controller", "error");
             }
         }
-
-
-        
-
     ?>
-    
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,9 +109,15 @@
                     <button onclick="missingResourcesPopup()">Rozbuduj kopalnie żelaza</button>
                 <br>
                 <?php endif; ?> 
+                <br>
+                <a href="index.php?action=townHall">Ratusz</a>
             </div>
             <div class="col-12 col-md-6">
+            <?php if(isset($mainContent)) : 
+                    echo $mainContent; ?>
+                <?php else : ?>
                 Widok wioski
+                <?php endif; ?>
             </div>
             <div class="col-12 col-md-3 border-left">
                 Lista wojska
@@ -100,7 +128,8 @@
             <table class="table table-bordered">
             <?php
             
-                
+
+
             
             foreach ($gm->l->getLog() as $entry) {
                 $timestamp = date('d.m.Y H:i:s', $entry['timestamp']);
