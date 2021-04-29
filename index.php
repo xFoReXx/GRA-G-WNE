@@ -54,7 +54,7 @@
                                 <button>Rozbuduj</button>
                                 </a></td>";
                         else
-                        $mainContent .= "<td></td>";
+                            $mainContent .= "<td></td>";
                         $mainContent .="</tr>";
                     }
                     $mainContent .= "</table>";
@@ -100,8 +100,9 @@
             </div>
         </header>
         <main class="row border-bottom">
-            <div class="col-12 col-md-3 border-right">
+            <div class="col-12 col-md-2 border-right">
                 Lista budynków<br>
+                <!--
                 Drwal, poziom <?php echo $v->buildingLVL("woodcutter"); ?> <br>
                 Zysk/h: <?php echo $v->showHourGain("wood"); ?><br>
                 <?php if($v->checkBuildingUpgrade("woodcutter")) : ?>
@@ -123,16 +124,17 @@
                 <br>
                 <?php endif; ?> 
                 <br>
+                -->
                 <a href="index.php?action=townHall">Ratusz</a>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-8">
             <?php if(isset($mainContent)) : 
                     echo $mainContent; ?>
                 <?php else : ?>
                 Widok wioski
                 <?php endif; ?>
             </div>
-            <div class="col-12 col-md-3 border-left">
+            <div class="col-12 col-md-2 border-left">
                 Lista wojska
             </div>
         </main>
