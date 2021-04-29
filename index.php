@@ -23,7 +23,8 @@
                 case 'townHall' :
                     $buildingList = $v->buildingList();
                     $mainContent = "<table class=\"table table-bordered\">";
-                    $mainContent .= "<tr><th>Nazwa budynku</th><th>Poziom budynku</th><th>Kosz ulepszenia</th><th>Rozbudowa</th></tr>";
+                    $mainContent .= "<tr><th>Nazwa budynku</th><th>Poziom budynku</th>
+                                   <th>Produkcja/h / pojemność</th><th>Kosz ulepszenia</th><th>Rozbudowa</th></tr>";
                     foreach($buildingList as $index => $building) 
                     {
                         $name = $building['buildingName'];
@@ -32,9 +33,21 @@
                         
                         foreach($building['upgradeCost'] as $resource => $cost)
                         {
+                           
                             $upgradeCost .= "$resource: $cost,";
                         }
-                        $mainContent .="<tr><td>$name</td><td>$level</td><td>$upgradeCost</td>";
+                        $mainContent .="<tr><td>$name</td><td>$level</td>";
+                        if(isset($building['capacity']))
+                        {
+                            $gain = $building['hourGain'];
+                           $cap = $building['capacity'];
+                           $mainContent .="<td>$gain / $cap</td>";
+                        }
+                        else 
+                        {
+                            $mainContent .="<td></td>";
+                        }
+                        $mainContent .="<td>$upgradeCost</td>";
                         if($v->checkBuildingUpgrade($name))
                             $mainContent .= 
                                 "<td><a href=\"index.php?action=upgradeBuilding&building=$name\">
