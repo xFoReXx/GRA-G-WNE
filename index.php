@@ -10,60 +10,45 @@
         {
             $gm = $_SESSION['gm'];
         }
-        $v = $gm->v; //niezależnmie czy nowa gra czy załadowana
+        $v = $gm->v; //niezależnie cyz nowa gra czy załadowana
         $gm->sync(); //przelicz surowce
-
+        
         if(isset($_REQUEST['action'])) 
         {
             switch($_REQUEST['action'])
             {
                 case 'upgradeBuilding':
                     $v->upgradeBuilding($_REQUEST['building']);
+                    require('view/townHall.php');
                 break;
-                case 'townHall' :
-                    $buildingList = $v->buildingList();
-                    $mainContent = "<table class=\"table table-bordered\">";
-                    $mainContent .= "<tr><th>Nazwa budynku</th><th>Poziom budynku</th>
-                                   <th>Produkcja/h / pojemność</th><th>Kosz ulepszenia</th><th>Rozbudowa</th></tr>";
-                    foreach($buildingList as $index => $building) 
+                case 'newUnit':
+                    if(isset($_REQUEST['spearmen'])) //kliknelismy wyszkol przy włócznikach
                     {
-                        $name = $building['buildingName'];
-                        $level = $building['buildingLVL'];
-                        $upgradeCost = "";
-                        
-                        foreach($building['upgradeCost'] as $resource => $cost)
-                        {
-                           
-                            $upgradeCost .= "$resource: $cost,";
-                        }
-                        $mainContent .="<tr><td>$name</td><td>$level</td>";
-                        if(isset($building['capacity']))
-                        {
-                            $gain = $building['hourGain'];
-                           $cap = $building['capacity'];
-                           $mainContent .="<td>$gain / $cap</td>";
-                        }
-                        else 
-                        {
-                            $mainContent .="<td></td>";
-                        }
-                        $mainContent .="<td>$upgradeCost</td>";
-                        if($v->checkBuildingUpgrade($name))
-                            $mainContent .= 
-                                "<td><a href=\"index.php?action=upgradeBuilding&building=$name\">
-                                <button>Rozbuduj</button>
-                                </a></td>";
-                        else
-                            $mainContent .= "<td></td>";
-                        $mainContent .="</tr>";
+                        $count = $_REQUEST['spearmen']; //ilość nowych włóczników
+                        $gm->newArmy($count, 0, 0, $v); //tworz nowy oddział włóczników w wiosce w ilosci $count;
                     }
-                    $mainContent .= "</table>";
-                    $mainContent .= "<a href=\"index.php\">Powrót</a>";
+                    if(isset($_REQUEST['archer']))
+                    {
+                        $count = $_REQUEST['archer']; 
+                        $gm->newArmy(0, $count, 0, $v); 
+                    }
+                    if(isset($_REQUEST['cavalry']))
+                    {
+                        $count = $_REQUEST['cavalry']; 
+                        $gm->newArmy(0, 0, $count, $v); 
+                    }
+                    require('view/townSquare.php');
+                break;
+                case 'townHall':
+                    require('view/townHall.php');
+                break;
+                case 'townSquare':
+                    require('view/townSquare.php');
                 break;
                 default:
-                    $gm->l->log( "Nieprawidłowa zmienna \"action\"", "controller", "error");
+                    $gm->l->log("Nieprawidłowa zmienna \"action\"", "controller", "error");
             }
-        }
+        }             
     ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -110,9 +95,8 @@
                     <button>Rozbuduj drwala</button>
                 </a><br>
                 <?php else : ?>
-                    <button onclick="missingResourcesPopup()">Rozbuduj drwala</button>
-                <br>
-                <?php endif; ?> 
+                    <button onclick="missingResourcesPopup()">Rozbuduj drwala</button><br>
+                <?php endif; ?>
                 Kopalnia żelaza, poziom <?php echo $v->buildingLVL("ironMine"); ?> <br>
                 Zysk/h: <?php echo $v->showHourGain("iron"); ?><br>
                 <?php if($v->checkBuildingUpgrade("ironMine")) : ?>
@@ -122,13 +106,20 @@
                 <?php else : ?>
                     <button onclick="missingResourcesPopup()">Rozbuduj kopalnie żelaza</button>
                 <br>
-                <?php endif; ?> 
+                <?php endif; ?>
                 <br>
                 -->
-                <a href="index.php?action=townHall">Ratusz</a>
+                <ul style="list-style-type: none; padding:0;">
+                    <li>
+                        <a href="index.php?action=townHall">Ratusz</a>
+                    </li>
+                    <li>
+                        <a href="index.php?action=townSquare">Plac</a>
+                    </li>
+                </ul>
             </div>
             <div class="col-12 col-md-8">
-            <?php if(isset($mainContent)) : 
+                <?php if(isset($mainContent)) : 
                     echo $mainContent; ?>
                 <?php else : ?>
                 Widok wioski
@@ -143,20 +134,21 @@
             <table class="table table-bordered">
             <?php
             
-
-
+                
+                    
+                
             
             foreach ($gm->l->getLog() as $entry) {
                 $timestamp = date('d.m.Y H:i:s', $entry['timestamp']);
                 $sender = $entry['sender'];
                 $message = $entry['message'];
                 $type = $entry['type'];
-                 echo "<tr>";
-                 echo "<td>$timestamp</td>";
-                 echo "<td>$sender</td>";
-                 echo "<td>$message</td>";
-                 echo "<td>$type</td>";
-                 echo "</tr>";
+                echo "<tr>";
+                echo "<td>$timestamp</td>";
+                echo "<td>$sender</td>";
+                echo "<td>$message</td>";
+                echo "<td>$type</td>";
+                echo "</tr>";
             }
             
             ?>
@@ -164,12 +156,18 @@
             </div>
         </footer>
     </div>
-        <script>
-            function missingResourcesPopup(){
-                window.alert("Brakuje zasobów");
-            }
-        </script>
+    <script>
+        function missingResourcesPopup() {
+            window.alert("Brakuje zasobów");
+        }
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <pre>
+    <?php
+        echo "Obecny czas: ".time(); 
+        var_dump($gm->s->schedule); 
+    ?>
+    </pre>
 </body>
-</html> 
+</html>
