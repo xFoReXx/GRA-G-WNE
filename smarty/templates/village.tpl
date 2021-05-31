@@ -1,0 +1,1 @@
+Widok wioski placeholder
