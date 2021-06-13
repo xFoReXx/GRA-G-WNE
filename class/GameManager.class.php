@@ -13,12 +13,14 @@ class GameManager
     public function __construct()
     {
         $this->l = new Log();
-
+        
         $this->l->log("Tworzę nową gre...", 'gameManager', 'info');
         $this->v = new Village($this);
         $this->a = array();
         $this->s = new Scheduler($this);
         $this->t = time();
+        $this->l->log("Łącze z bazą danych...", 'gameManager', 'info');
+
 
     }
     public function deltaTime() : int
@@ -31,7 +33,7 @@ class GameManager
         //na koniec synchronizuj z obecnym czasem
         $this->v->gain($this->deltaTime());
         $this->t = time();
-
+        
     }
     public function newArmy($spearmen, $archers, $cavalry, $location) 
     {

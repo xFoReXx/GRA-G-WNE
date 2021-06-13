@@ -2,7 +2,7 @@
     <div class="container">
         <header class="row border-bottom">
             <div class="col-12 col-md-3">
-                Informacje o graczu
+                Gracz: {$playerLogin|default:"anonim"}
             </div>
             <div class="col-12 col-md-6">
                 <div class="row">
@@ -13,7 +13,7 @@
                         Żelazo: {$iron}
                     </div>
                     <div class="col-12 col-md-3">
-                        Zasób 3
+                        Jedzenie: {$food}
                     </div>
                     <div class="col-12 col-md-3">
                         Zasób 4
@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-3">
-                Guzik wyloguj
+                <<a href="/logout">Reset</a>
             </div>
         </header>
         <main class="row border-bottom">
@@ -29,10 +29,10 @@
                 Lista budynków<br>
                 <ul style="list-style-type: none; padding:0;">
                     <li>
-                        <a href="index.php?action=townHall">Ratusz</a>
+                       <a href="/townhall">Ratusz</a>
                     </li>
                     <li>
-                        <a href="index.php?action=townSquare">Plac</a>
+                        <a href="/townsquare">Plac</a>
                     </li>
                 </ul>
             </div>
@@ -45,9 +45,9 @@
         </main>
         <footer class="row">
             <div class="col-12">
-
+            
             {include file="log.tpl"}
-
+            
             </div>
         </footer>
     </div> <!-- /container -->
